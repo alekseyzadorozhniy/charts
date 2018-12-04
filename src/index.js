@@ -6,7 +6,7 @@ var svg = d3
   .style('width', '100%')
   .style('height', 'auto')
   .style('padding-left', '65px')
-  .style('overflow', 'visible');
+  .style('overflow', 'hidden');
 
 const initialData = [
   { name: 'TEAM A', total: 20, notBegun: 9, partial: 6, completed: 5 }
@@ -203,8 +203,8 @@ const node = svg
   .attr('height', d => d.y1 - d.y0);
 
 node
-  .transition(t)
-  .delay(500)
+  // .transition(t)
+  // .delay(500)
   .attr('width', d =>
     statuses.includes(d.name) ? d.x1 - d.x0 - 20 : d.x1 - d.x0
   );
@@ -224,16 +224,18 @@ const link = svg
   .append('g')
   .style('mix-blend-mode', 'multiply');
 
-var t = d3
-  .transition()
-  .duration(750)
-  .ease(d3.easeLinear);
+// var t = d3
+//   .transition()
+//   .duration(750)
+//   .ease(d3.easeLinear);
 
-link
+const path = link
   .append('path')
   .attr('d', sankeyLinkHorizontal())
-  .attr('stroke', d => color(d.source.name));
+  .attr('stroke', d => color(d.source.name))
+  .attr('class', 'data-path');
 
+console.log(path);
 // link
 //   .transition()
 //   .duration(800)
@@ -262,14 +264,15 @@ const label = svg
   .attr('y', d => (d.y1 + d.y0) / 2)
   .attr('dy', '0.35em')
   .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
-  .attr('fill', d => color(d.name))
-  .attr('transform', 'scale(0)');
+  .attr('fill', d => color(d.name));
+// .attr('transform', 'scale(0)');
 
 label
-  .transition(t)
-  .attr('transform', 'scale(1)')
+  // .transition(t)
+  // .attr('transform', 'scale(1)')
   // .transition()
   // .transition()
   // .duration(1500)
   // .attr('transform', 'scale(1)')
-  .text(d => d.name);
+  .text(d => d.name)
+  .attr('class', 'team-names');
