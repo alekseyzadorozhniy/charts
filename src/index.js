@@ -167,7 +167,7 @@ const color = (() => {
 
 const format = (() => {
   const f = d3.format(',.0f');
-  return d => `${f(d)} TWh`;
+  return d => `${f(d)}`;
 })();
 
 const sankey1 = (() => {
@@ -240,8 +240,8 @@ link
 //   .attr('stroke-dashoffset', 0);
 
 link
-  .transition(t)
-  .delay(700)
+  // .transition(t)
+  // .delay(700)
   .attr('stroke-width', d => Math.max(1, d.width));
 // .on('click', hover);
 
