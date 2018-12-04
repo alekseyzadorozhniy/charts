@@ -21,17 +21,17 @@ const statuses = ['COMPLETED', 'PARTIAL', 'NOT BEGUN'];
 
 const data = {
   nodes: [
-    { name: 'COMPLETED' },
-    { name: 'PARTIAL' },
-    { name: 'NOT BEGUN' },
-    { name: 'TEAM A' },
-    { name: 'TEAM B' },
-    { name: 'TEAM C' },
-    { name: 'TEAM D' },
-    { name: 'TEAM E' },
-    { name: 'TEAM F' },
-    { name: 'TEAM G' },
-    { name: 'TEAM H' }
+    { name: 'COMPLETED', id: 0 },
+    { name: 'PARTIAL', id: 1 },
+    { name: 'NOT BEGUN', id: 2 },
+    { name: 'TEAM A', id: 3 },
+    { name: 'TEAM B', id: 4 },
+    { name: 'TEAM C', id: 5 },
+    { name: 'TEAM D', id: 6 },
+    { name: 'TEAM E', id: 7 },
+    { name: 'TEAM F', id: 8 },
+    { name: 'TEAM G', id: 9 },
+    { name: 'TEAM H', id: 10 }
   ],
   links: [
     {
@@ -184,27 +184,17 @@ const sankey1 = (() => {
 
 const { nodes, links } = sankey1(data);
 
-function hover(name) {
-  // link.selectAll('path').attr('fill', '#000');
-  // svg.style('opacity', 0.3);
-  d3.selectAll(link).attr('fill', '#fff');
-  // console.log(name); //.attr('fill', '#000');
-}
-
 const node = svg
   .append('g')
-  // .attr('stroke', '#000')
   .selectAll('rect')
   .data(nodes)
   .enter()
   .append('rect')
+  .attr('class', 'team-node')
+  .attr('id', d => `node${d.id}`)
   .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 - 10))
   .attr('y', d => d.y0)
-  .attr('height', d => d.y1 - d.y0);
-
-node
-  // .transition(t)
-  // .delay(500)
+  .attr('height', d => d.y1 - d.y0)
   .attr('width', d =>
     statuses.includes(d.name) ? d.x1 - d.x0 - 20 : d.x1 - d.x0
   );
@@ -224,28 +214,13 @@ const link = svg
   .append('g')
   .style('mix-blend-mode', 'multiply');
 
-// var t = d3
-//   .transition()
-//   .duration(750)
-//   .ease(d3.easeLinear);
-
 const path = link
   .append('path')
   .attr('d', sankeyLinkHorizontal())
   .attr('stroke', d => color(d.source.name))
-  .attr('class', 'data-path');
-
-console.log(path);
-// link
-//   .transition()
-//   .duration(800)
-//   .attr('stroke-dashoffset', 0);
-
-link
-  // .transition(t)
-  // .delay(700)
+  .attr('class', 'data-path')
+  .attr('id', d => `path${d.index}`)
   .attr('stroke-width', d => Math.max(1, d.width));
-// .on('click', hover);
 
 link
   .append('title')
@@ -259,20 +234,10 @@ const label = svg
   .data(nodes)
   .enter()
   .append('text')
+  .attr('class', 'team-names')
   .attr('x', d => (statuses.includes(d.name) ? d.x1 + 70 : d.x0 - 65))
-  // .attr('x', d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
   .attr('y', d => (d.y1 + d.y0) / 2)
   .attr('dy', '0.35em')
   .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
-  .attr('fill', d => color(d.name));
-// .attr('transform', 'scale(0)');
-
-label
-  // .transition(t)
-  // .attr('transform', 'scale(1)')
-  // .transition()
-  // .transition()
-  // .duration(1500)
-  // .attr('transform', 'scale(1)')
-  .text(d => d.name)
-  .attr('class', 'team-names');
+  .attr('fill', d => color(d.name))
+  .text(d => d.name);
