@@ -1,20 +1,44 @@
 @keyframes fade-out {
-  from {
-    transform: scale(0);
+  0% {
+    transform: scale(0) translate(0, 0);
   }
-  to {
-    transform: scale(1);
+  1% {
+    transform: scale(0) translate(50%, 50%);
+  }
+  100% {
+    transform: scale(1) translate(100%, 100%);
   }
 }
 
 .team-names {
-  animation: fade-out 5s 1;
+  animation: fade-out 3s 1;
+}
+
+@keyframes team-node {
+  0% {
+    opacity: 0;
+    width: 0;
+  }
+  1% {
+    opacity: 1;
+    width: 0;
+  }
+  100% {
+    opacity: 1;
+    width: 35;
+  }
+}
+
+.team-node {
+  animation: team-node 3s 1;
+  animation-delay: 3s;
 }
 
 .data-path {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: dash 5s linear forwards;
+  animation-delay: 6s;
 }
 @keyframes dash {
   to {
