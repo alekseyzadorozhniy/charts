@@ -12,6 +12,14 @@ const initialData = [
   { name: 'TEAM A', total: 20, notBegun: 9, partial: 6, completed: 5 }
 ];
 
+const getTotalForTarget = d => {
+  const totalForTarget = data.links.reduce((acc, link) => {
+    return d.id === link.target ? acc + link.value : acc;
+  }, 0);
+  const total = data.links.reduce((acc, link) => acc + link.value, 0);
+  return { total: totalForTarget, percent: (totalForTarget * 100) / total };
+};
+
 const hoverState = {
   isHover: false,
   hoveringNode: null
@@ -190,7 +198,7 @@ const node = svg
   .data(nodes)
   .enter()
   .append('rect')
-  .attr('class', 'team-node')
+  .attr('class', d => (statuses.includes(d.name) ? 'status-node' : 'team-node'))
   .attr('id', d => `node${d.id}`)
   .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 - 10))
   .attr('y', d => d.y0)
@@ -234,10 +242,37 @@ const label = svg
   .data(nodes)
   .enter()
   .append('text')
-  .attr('class', 'team-names')
-  .attr('x', d => (statuses.includes(d.name) ? d.x1 + 70 : d.x0 - 65))
+  .attr('x', d => (statuses.includes(d.name) ? d.x1 : d.x0 - 65))
   .attr('y', d => (d.y1 + d.y0) / 2)
   .attr('dy', '0.35em')
-  .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
+  .attr('text-anchor', 'start')
   .attr('fill', d => color(d.name))
+  .attr('class', 'team-names')
   .text(d => d.name);
+
+const value = svg
+  .append('g')
+  .selectAll('text')
+  .data(nodes)
+  .enter()
+  .append('text')
+  .style('text-align', 'left')
+  .style('font', d =>
+    statuses.includes(d.name) ? '20px sans-serif' : '12px sans-serif'
+  )
+  .style('font-weight', d => (statuses.includes(d.name) ? 'regular' : 'bold'))
+  .attr('x', d => (statuses.includes(d.name) ? d.x1 : d.x0))
+  .attr('y', d =>
+    statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 20 : (d.y1 + d.y0) / 2
+  )
+  .attr('dy', '0.35em')
+  .attr('text-anchor', 'start')
+  .attr('fill', d => (statuses.includes(d.name) ? 'black' : 'white'))
+  .text(d => {
+    const { total, percent } = getTotalForTarget(d);
+    return statuses.includes(d.name)
+      ? `${total} - ${Math.round(percent)}%`
+      : data.links.reduce((accumulator, link) => {
+          return d.id === link.source ? accumulator + link.value : accumulator;
+        }, 0);
+  });
