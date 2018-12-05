@@ -6,7 +6,7 @@ var svg = d3
   .style('width', '100%')
   .style('height', 'auto')
   .style('padding-left', '65px')
-  .style('overflow', 'hidden');
+  .style('overflow', 'visible');
 
 const initialData = [
   { name: 'TEAM A', total: 20, notBegun: 9, partial: 6, completed: 5 }
