@@ -8,8 +8,7 @@
 
 .team-names,
 .team-value {
-  font: 2px sans-serif;
-  font-weight: bold;
+  font-size: 2px;
 }
 
 .team-names {
@@ -100,6 +99,7 @@
   color: #648c8c;
   text-transform: uppercase;
   text-align: center;
+  font-family: lato-semibold;
   padding-top: 15px;
 }
 
@@ -110,6 +110,25 @@
 }
 
 .status-value {
-  font-size: 22px;
-  color: black;
+  font-size: 20px;
+  font-family: lato-bold;
+  color: #333;
+  padding-top: 4px;
+  dy: 20em !important;
+}
+
+.status-names {
+  font-size: 16px;
+  font-family: lato-medium;
+  color: #333;
+}
+
+.team-names,
+.team-value,
+.benchmark p,
+.status-names,
+.status-value,
+.benchmark-values {
+  font-family: sans-serif;
+  font-weight: bold;
 }
