@@ -247,7 +247,9 @@ const label = svg
   .attr('dy', '0.35em')
   .attr('text-anchor', 'start')
   .attr('fill', d => color(d.name))
-  .attr('class', 'team-names')
+  .attr('class', d =>
+    statuses.includes(d.name) ? 'status-names' : 'team-names'
+  )
   .text(d => d.name);
 
 const value = svg
@@ -261,6 +263,9 @@ const value = svg
     statuses.includes(d.name) ? '20px sans-serif' : '12px sans-serif'
   )
   .style('font-weight', d => (statuses.includes(d.name) ? 'regular' : 'bold'))
+  .attr('class', d =>
+    statuses.includes(d.name) ? 'status-value' : 'team-value'
+  )
   .attr('x', d => (statuses.includes(d.name) ? d.x1 : d.x0))
   .attr('y', d =>
     statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 20 : (d.y1 + d.y0) / 2
