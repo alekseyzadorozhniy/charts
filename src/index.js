@@ -4,7 +4,6 @@ import * as d3 from 'd3';
 var svg = d3
   .select('svg')
   .style('width', '100%')
-  .style('height', 'auto')
   .style('padding-left', '65px')
   .style('overflow', 'visible');
 
@@ -268,9 +267,7 @@ const value = svg
   .enter()
   .append('text')
   .style('text-align', 'left')
-  .style('font', d =>
-    statuses.includes(d.name) ? '20px sans-serif' : 'sans-serif'
-  )
+  .style('font', 'sans-serif')
   .style('font-weight', d => (statuses.includes(d.name) ? 'regular' : 'bold'))
   .attr('class', d =>
     statuses.includes(d.name) ? 'status-value' : 'team-value'
