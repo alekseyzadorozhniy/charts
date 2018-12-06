@@ -4,7 +4,6 @@ import * as d3 from 'd3';
 var svg = d3
   .select('svg')
   .style('width', '100%')
-  .style('height', 'auto')
   .style('padding-left', '65px')
   .style('overflow', 'visible');
 
@@ -26,6 +25,20 @@ const hoverState = {
 };
 
 const statuses = ['COMPLETED', 'PARTIAL', 'NOT BEGUN'];
+
+const nodeColors = [
+  '#648C8C',
+  '#B1C5C5',
+  '#F4F4F0',
+  '#99407A',
+  '#4FB0A9',
+  '#8BA9A9',
+  '#FFDA70',
+  '#73A5CA',
+  '#D4677C',
+  '#0B5A79',
+  '#96D173'
+];
 
 const data = {
   nodes: [
@@ -168,10 +181,7 @@ const data = {
 const width = 964;
 const height = 600;
 
-const color = (() => {
-  const color = d3.scaleOrdinal(d3.schemeAccent);
-  return name => color(name);
-})();
+const color = id => nodeColors[id];
 
 const format = (() => {
   const f = d3.format(',.0f');
@@ -208,7 +218,7 @@ const node = svg
   );
 
 node
-  .attr('fill', d => color(d.name))
+  .attr('fill', d => color(d.id))
   .append('title')
   .text(d => `${d.name}\n${format(d.value)}`);
 
@@ -225,7 +235,7 @@ const link = svg
 const path = link
   .append('path')
   .attr('d', sankeyLinkHorizontal())
-  .attr('stroke', d => color(d.source.name))
+  .attr('stroke', d => color(d.source.id))
   .attr('class', 'data-path')
   .attr('id', d => `path${d.index}`)
   .attr('stroke-width', d => Math.max(1, d.width));
@@ -236,8 +246,6 @@ link
 
 const label = svg
   .append('g')
-  .style('font', '12px sans-serif')
-  .style('font-weight', 'bold')
   .selectAll('text')
   .data(nodes)
   .enter()
@@ -246,8 +254,10 @@ const label = svg
   .attr('y', d => (d.y1 + d.y0) / 2)
   .attr('dy', '0.35em')
   .attr('text-anchor', 'start')
-  .attr('fill', d => color(d.name))
-  .attr('class', 'team-names')
+  .attr('fill', d => (statuses.includes(d.name) ? '#648C8C' : color(d.id)))
+  .attr('class', d =>
+    statuses.includes(d.name) ? 'status-names' : 'team-names'
+  )
   .text(d => d.name);
 
 const value = svg
@@ -257,10 +267,11 @@ const value = svg
   .enter()
   .append('text')
   .style('text-align', 'left')
-  .style('font', d =>
-    statuses.includes(d.name) ? '20px sans-serif' : '12px sans-serif'
-  )
+  .style('font', 'sans-serif')
   .style('font-weight', d => (statuses.includes(d.name) ? 'regular' : 'bold'))
+  .attr('class', d =>
+    statuses.includes(d.name) ? 'status-value' : 'team-value'
+  )
   .attr('x', d => (statuses.includes(d.name) ? d.x1 : d.x0))
   .attr('y', d =>
     statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 20 : (d.y1 + d.y0) / 2

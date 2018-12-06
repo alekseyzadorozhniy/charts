@@ -5,7 +5,26 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <svg width="964" height="600"></svg>
+    <div class="container">
+      <svg width="964px" height="600px"></svg>
+      <div class="benchmark">
+        <p>Benchmark scores of all teams combined</p>
+        <div class="benchmark-values">
+          <div>
+            <div>Completed</div>
+            <div id="completed-total-value" class="status-value">32%</div>
+          </div>
+          <div>
+            <div>Partial completion</div>
+            <div id="partial-total-value" class="status-value">32%</div>
+          </div>
+          <div>
+            <div>Not begun</div>
+            <div id="not-begun-total-value" class="status-value">32%</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="dist/main.js"></script>
   </body>
 </html>
