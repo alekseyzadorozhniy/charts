@@ -1,47 +1,94 @@
-@keyframes fade-out {
-  0% {
-    transform: scale(0) translate(0, 0);
-  }
-  1% {
-    transform: scale(0) translate(50%, 50%);
-  }
-  100% {
-    transform: scale(1) translate(100%, 100%);
-  }
+/*Team Names*/
+
+.team-names,
+.team-value {
+  font: 2px sans-serif;
+  font-weight: bold;
 }
 
 .team-names {
-  animation: fade-out 3s 1;
+  animation: scale .5s ease forwards;
+  opacity: 0;
+}
+
+/*Team Value*/
+.team-value {
+  animation: scale .5s ease forwards;
+  opacity: 0;
+  animation-delay: .7s;
+}
+
+@keyframes scale {
+  from {
+    opacity: 0;
+  }
+  to {
+    font-size: 12px;
+    opacity: 1;
+  }
+}
+
+/*Team Node*/
+.team-node {
+  animation: team-node .6s forwards;
+  transition: all ease-in;
+  opacity: 0;
+  animation-delay: .4s;
 }
 
 @keyframes team-node {
-  0% {
+  from {
+    width: 0;
     opacity: 0;
-    width: 0;
   }
-  1% {
+  to {
+    width: 35px;
     opacity: 1;
-    width: 0;
-  }
-  100% {
-    opacity: 1;
-    width: 35;
   }
 }
 
-.team-node {
-  animation: team-node 3s 1;
-  animation-delay: 3s;
+
+
+
+
+/*Status Node*/
+.status-node {
+  animation: status-node .6s forwards;
+  transition: all ease-in;
+  opacity: 0;
+  animation-delay: 2s;
 }
+
+@keyframes status-node {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+/*Data Path*/
 
 .data-path {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
-  animation: dash 5s linear forwards;
-  animation-delay: 6s;
+  animation: dash 2.5s ease forwards;
+  animation-delay: .7s;
 }
+
 @keyframes dash {
-  to {
+  1% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+
+  100% {
     stroke-dashoffset: 0;
+    opacity: 1;
   }
 }

@@ -247,8 +247,6 @@ link
 
 const label = svg
   .append('g')
-  .style('font', '12px sans-serif')
-  .style('font-weight', 'bold')
   .selectAll('text')
   .data(nodes)
   .enter()
@@ -271,7 +269,7 @@ const value = svg
   .append('text')
   .style('text-align', 'left')
   .style('font', d =>
-    statuses.includes(d.name) ? '20px sans-serif' : '12px sans-serif'
+    statuses.includes(d.name) ? '20px sans-serif' : 'sans-serif'
   )
   .style('font-weight', d => (statuses.includes(d.name) ? 'regular' : 'bold'))
   .attr('class', d =>
