@@ -77,29 +77,6 @@ body {
   }
 }
 
-/*Data Path*/
-
-.data-path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: dash 2.5s ease forwards;
-  animation-delay: 0.7s;
-}
-
-@keyframes dash {
-  1% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-
-  100% {
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-}
-
 /* Benchmark */
 
 .benchmark p,
@@ -146,4 +123,26 @@ body {
   font-size: 16px;
   font-weight: 400;
   color: #333;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.wrapper:before {
+  animation: background-color 1.7s ease-in-out forwards;
+  animation-delay: 0.8s;
+  content: '';
+  position: absolute;
+  background: #fff;
+  width: 82%;
+  height: 100%;
+  right: 100px;
+  top: 0;
+}
+
+@keyframes background-color {
+  to {
+    width: 0;
+  }
 }
