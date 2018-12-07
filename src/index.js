@@ -11,18 +11,24 @@ const initialData = [
   { name: 'TEAM A', total: 20, notBegun: 9, partial: 6, completed: 5 }
 ];
 
-const getTotalForTarget = d => {
-  const totalForTarget = data.links.reduce((acc, link) => {
-    return d.id === link.target ? acc + link.value : acc;
-  }, 0);
-  const total = data.links.reduce((acc, link) => acc + link.value, 0);
-  return { total: totalForTarget, percent: (totalForTarget * 100) / total };
+const getTotalForTarget = (target, totalTarget) => {
+  const total =
+    totalTarget || data.links.reduce((acc, link) => acc + link.value, 0);
+  return `${target} - ${Math.round((target * 100) / total)}%`;
 };
 
-const hoverState = {
-  isHover: false,
-  hoveringNode: null
-};
+const getTotalForOutcome = d =>
+  data.links.reduce((acc, link) => {
+    return d.id === link.target ? acc + link.value : acc;
+  }, 0);
+
+const getTotalForIncomeLink = ({ sourceId, targetId }) =>
+  data.links.reduce((acc, link) => {
+    console.log(targetId, sourceId);
+    return targetId === link.target && link.source === sourceId
+      ? acc + link.value
+      : acc;
+  }, 0);
 
 const statuses = ['COMPLETED', 'PARTIAL', 'NOT BEGUN'];
 
@@ -225,7 +231,7 @@ node
 const link = svg
   .append('g')
   .attr('fill', 'none')
-  .attr('stroke-opacity', 0.6)
+  .attr('stroke-opacity', 0.7)
   .selectAll('g')
   .data(links)
   .enter()
@@ -239,10 +245,6 @@ const path = link
   .attr('class', 'data-path')
   .attr('id', d => `path${d.index}`)
   .attr('stroke-width', d => Math.max(1, d.width));
-
-link
-  .append('title')
-  .text(d => `${d.source.name} → ${d.target.name}\n${format(d.value)}`);
 
 const label = svg
   .append('g')
@@ -280,10 +282,33 @@ const value = svg
   .attr('text-anchor', 'start')
   .attr('fill', d => (statuses.includes(d.name) ? 'black' : 'white'))
   .text(d => {
-    const { total, percent } = getTotalForTarget(d);
     return statuses.includes(d.name)
-      ? `${total} - ${Math.round(percent)}%`
-      : data.links.reduce((accumulator, link) => {
-          return d.id === link.source ? accumulator + link.value : accumulator;
-        }, 0);
+      ? getTotalForTarget(getTotalForOutcome(d))
+      : data.links.reduce(
+          (accumulator, link) =>
+            d.id === link.source ? accumulator + link.value : accumulator,
+          0
+        );
   });
+
+path.on('mouseover', cd => {
+  value.text(d =>
+    statuses.includes(d.name)
+      ? getTotalForTarget(
+          getTotalForIncomeLink({ sourceId: cd.source.id, targetId: d.id }),
+          cd.source.value
+        )
+      : data.links.reduce(
+          (accumulator, link) =>
+            d.id === link.source ? accumulator + link.value : accumulator,
+          0
+        )
+  );
+  path.style('stroke-opacity', d =>
+    cd.source.id !== d.source.id ? 0.25 : 0.75
+  );
+});
+
+link
+  .append('title')
+  .text(d => `${d.source.name} → ${d.target.name}\n${format(d.value)}`);

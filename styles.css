@@ -80,8 +80,8 @@ body {
 /*Data Path*/
 
 .data-path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
+  stroke-dasharray: 1050;
+  stroke-dashoffset: 1050;
   animation: dash 2.5s ease forwards;
   animation-delay: 0.7s;
 }
