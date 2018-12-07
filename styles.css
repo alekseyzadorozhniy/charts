@@ -1,3 +1,7 @@
+body {
+  font-family: 'Lato', sans-serif;
+}
+
 .container {
   width: 1100px;
   height: 800px;
@@ -9,6 +13,7 @@
 .team-names,
 .team-value {
   font-size: 2px;
+  font-weight: 700;
 }
 
 .team-names {
@@ -64,9 +69,11 @@
   from {
     height: 0;
     opacity: 0;
+    transform: translateY(150px);
   }
   to {
     opacity: 1;
+    transform: translateY(0px);
   }
 }
 
@@ -95,11 +102,29 @@
 
 /* Benchmark */
 
+.benchmark p,
+.status-names,
+.status-value,
+.benchmark-values {
+  opacity: 0;
+  animation: opacity 1s ease forwards;
+  animation-delay: 2.5s;
+}
+
+@keyframes opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .benchmark {
   color: #648c8c;
   text-transform: uppercase;
   text-align: center;
-  font-family: lato-semibold;
+  font-weight: 700;
   padding-top: 15px;
 }
 
@@ -111,7 +136,7 @@
 
 .status-value {
   font-size: 20px;
-  font-family: lato-bold;
+  font-weight: 900;
   color: #333;
   padding-top: 4px;
   dy: 20em !important;
@@ -119,16 +144,6 @@
 
 .status-names {
   font-size: 16px;
-  font-family: lato-medium;
+  font-weight: 400;
   color: #333;
-}
-
-.team-names,
-.team-value,
-.benchmark p,
-.status-names,
-.status-value,
-.benchmark-values {
-  font-family: sans-serif;
-  font-weight: bold;
 }
