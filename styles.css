@@ -6,6 +6,15 @@ body {
   width: 900px;
   height: 800px;
   padding-left: 65px;
+  padding-top: 75px;
+}
+
+.title {
+  animation: scale2 0.5s ease forwards;
+  opacity: 0;
+  font-size: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 /*Team Names*/
@@ -37,6 +46,16 @@ body {
     opacity: 1;
   }
 }
+@keyframes scale2 {
+  from {
+    opacity: 0;
+  }
+  to {
+    font-size: 16px;
+    opacity: 1;
+  }
+}
+
 
 /*Team Node*/
 .team-node {
@@ -142,7 +161,7 @@ body {
   content: '';
   position: absolute;
   background: #fff;
-  width: 82%;
+  width: 86%;
   height: 100%;
   right: 30px;
   top: 0;
