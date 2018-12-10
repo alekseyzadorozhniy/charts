@@ -1,0 +1,58 @@
+[
+  {
+    "name": "TEAM A",
+    "total": 20,
+    "notBegun": 9,
+    "partial": 6,
+    "completed": 5
+  },
+  {
+    "name": "TEAM B",
+    "total": 25,
+    "notBegun": 9,
+    "partial": 12,
+    "completed": 4
+  },
+  {
+    "name": "TEAM C",
+    "total": 12,
+    "notBegun": 5,
+    "partial": 4,
+    "completed": 3
+  },
+  {
+    "name": "TEAM D",
+    "total": 30,
+    "notBegun": 12,
+    "partial": 6,
+    "completed": 12
+  },
+  {
+    "name": "TEAM E",
+    "total": 20,
+    "notBegun": 7,
+    "partial": 6,
+    "completed": 7
+  },
+  {
+    "name": "TEAM F",
+    "total": 13,
+    "notBegun": 3,
+    "partial": 4,
+    "completed": 6
+  },
+  {
+    "name": "TEAM G",
+    "total": 30,
+    "notBegun": 11,
+    "partial": 10,
+    "completed": 9
+  },
+  {
+    "name": "TEAM H",
+    "total": 20,
+    "notBegun": 5,
+    "partial": 11,
+    "completed": 4
+  }
+]
