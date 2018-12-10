@@ -149,7 +149,7 @@ d3.json('data.json').then(initialData => {
     .data(nodes)
     .enter()
     .append('text')
-    .attr('x', d => (statuses.includes(d.name) ? d.x1 : d.x0 - 65))
+    .attr('x', d => (statuses.includes(d.name) ? d.x1 + 10 : d.x0 - 65))
     .attr('y', d => (d.y1 + d.y0) / 2)
     .attr('dy', '0.35em')
     .attr('text-anchor', 'start')
@@ -171,7 +171,7 @@ d3.json('data.json').then(initialData => {
     .attr('class', d =>
       statuses.includes(d.name) ? 'status-value' : 'team-value'
     )
-    .attr('x', d => (statuses.includes(d.name) ? d.x1 : d.x0))
+    .attr('x', d => (statuses.includes(d.name) ? d.x1 + 10 : d.x0))
     .attr('y', d =>
       statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 20 : (d.y1 + d.y0) / 2
     )

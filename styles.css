@@ -97,12 +97,18 @@ body {
   }
 }
 
-.benchmark {
+.benchmark,
+.title {
   color: #648c8c;
   text-transform: uppercase;
   text-align: center;
   font-weight: 700;
   padding-top: 15px;
+}
+
+.title {
+  text-align: left;
+  padding-left: 15px;
 }
 
 .benchmark-values {
