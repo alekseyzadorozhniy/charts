@@ -128,7 +128,7 @@ d3.json('data.json').then(initialData => {
   const link = svg
     .append('g')
     .attr('fill', 'none')
-    .attr('stroke-opacity', 0.7)
+    .attr('stroke-opacity', 1)
     .selectAll('g')
     .data(links)
     .enter()
@@ -188,12 +188,13 @@ d3.json('data.json').then(initialData => {
           );
     });
 
-  path.on('mouseover', cd => {
+  const textValue = cd => {
+    const preparedCd = cd.source ? cd.source : cd;
     value.text(d =>
       statuses.includes(d.name)
         ? getTotalForTarget(
-            getTotalForIncomeLink({ sourceId: cd.source.id, targetId: d.id }),
-            cd.source.value
+            getTotalForIncomeLink({ sourceId: preparedCd.id, targetId: d.id }),
+            preparedCd.value
           )
         : data.links.reduce(
             (accumulator, link) =>
@@ -201,10 +202,20 @@ d3.json('data.json').then(initialData => {
             0
           )
     );
+  };
+
+  path.on('mouseover', cd => {
+    textValue(cd);
     path.style('stroke-opacity', d =>
-      cd.source.id !== d.source.id ? 0.25 : 0.75
+      cd.source.id !== d.source.id ? 0.25 : 1
     );
-    node.style('opacity');
+    node.style('fill-opacity', d => (cd.source.id !== d.id ? 0.25 : 1));
+  });
+
+  node.on('mouseover', cd => {
+    textValue(cd);
+    path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+    node.style('fill-opacity', d => (cd.id !== d.id ? 0.25 : 1));
   });
 
   link
