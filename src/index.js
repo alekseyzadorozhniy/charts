@@ -258,6 +258,19 @@ d3.json('data.json').then(initialData => {
     );
   });
 
+  let onSvgOver = false;
+
+  svg.on('mouseover', () => (onSvgOver = true));
+  svg.on('mouseleave', () => (onSvgOver = false));
+
+  document.addEventListener('click', () => {
+    if (!onSvgOver) {
+      path.style('stroke-opacity', 1);
+      node.style('fill-opacity', 1);
+      nodeMock.style('fill-opacity', 1);
+    }
+  });
+
   link
     .append('title')
     .text(d => `${d.source.name} → ${d.target.name}\n${format(d.value)}`);
