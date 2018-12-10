@@ -45,7 +45,7 @@ const format = (() => {
 
 const sankey1 = (() => {
   const sankey2 = sankey()
-    .nodeWidth(35)
+    .nodeWidth(195)
     .nodePadding(10)
     .extent([[1, 1], [width - 1, height - 5]]);
   return ({ nodes, links }) =>
@@ -117,13 +117,32 @@ d3.json('data.json').then(initialData => {
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
     .attr('width', d =>
-      statuses.includes(d.name) ? d.x1 - d.x0 - 20 : d.x1 - d.x0
+      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0
     );
 
   node
     .attr('fill', d => color(d.id))
     .append('title')
     .text(d => `${d.name}\n${format(d.value)}`);
+
+  const nodeMock = svg
+    .append('g')
+    .selectAll('rect')
+    .data(nodes)
+    .enter()
+    .append('rect')
+    .attr('class', d =>
+      statuses.includes(d.name) ? 'status-mock-node' : 'team-mock-node'
+    )
+    .attr('id', d => `node${d.id}`)
+    .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 + 35))
+    .attr('y', d => d.y0)
+    .attr('height', d => d.y1 - d.y0)
+    .attr('width', d =>
+      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0 - 35
+    );
+
+  nodeMock.attr('fill', d => color(d.id));
 
   const link = svg
     .append('g')
@@ -149,7 +168,7 @@ d3.json('data.json').then(initialData => {
     .data(nodes)
     .enter()
     .append('text')
-    .attr('x', d => (statuses.includes(d.name) ? d.x1 + 10 : d.x0 - 65))
+    .attr('x', d => (statuses.includes(d.name) ? d.x1 - 135 : d.x0 - 65))
     .attr('y', d => (d.y1 + d.y0) / 2)
     .attr('dy', '0.35em')
     .attr('text-anchor', 'start')
@@ -171,7 +190,7 @@ d3.json('data.json').then(initialData => {
     .attr('class', d =>
       statuses.includes(d.name) ? 'status-value' : 'team-value'
     )
-    .attr('x', d => (statuses.includes(d.name) ? d.x1 + 10 : d.x0))
+    .attr('x', d => (statuses.includes(d.name) ? d.x1 - 135 : d.x0))
     .attr('y', d =>
       statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 20 : (d.y1 + d.y0) / 2
     )
@@ -209,13 +228,34 @@ d3.json('data.json').then(initialData => {
     path.style('stroke-opacity', d =>
       cd.source.id !== d.source.id ? 0.25 : 1
     );
-    node.style('fill-opacity', d => (cd.source.id !== d.id ? 0.25 : 1));
+    node.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.source.id !== d.id ? 0.25 : 1
+    );
+    nodeMock.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.source.id !== d.id ? 0.25 : 1
+    );
   });
 
   node.on('mouseover', cd => {
     textValue(cd);
     path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
-    node.style('fill-opacity', d => (cd.id !== d.id ? 0.25 : 1));
+    node.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+    );
+    nodeMock.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+    );
+  });
+
+  nodeMock.on('mouseover', cd => {
+    textValue(cd);
+    path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+    node.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+    );
+    nodeMock.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+    );
   });
 
   link
