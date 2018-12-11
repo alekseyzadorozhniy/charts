@@ -330,6 +330,21 @@ d3.json('data.json').then(initialData => {
     }
   });
 
+  value.on('mouseover', cd => {
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+      node.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+      nodeMock.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
+    }
+  });
+
   // Set opacity value to 0.25 for mouseleave event
   path.on('mouseleave', cd => {
     textValue(cd);
