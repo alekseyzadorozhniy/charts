@@ -39,7 +39,7 @@ function responsivefy(svg) {
   }
 }
 
-var svg = d3
+const svg = d3
   .select('svg')
   .style('width', '964')
   .style('padding-left', '65px')
@@ -111,8 +111,8 @@ const transformData = initialData => {
         status.id === 0
           ? node.completed
           : status.id === 1
-          ? node.partial
-          : node.notBegun
+            ? node.partial
+            : node.notBegun
     }));
     return [...list, ...res];
   }, []);
@@ -143,6 +143,16 @@ d3.json('data.json').then(initialData => {
     const total =
       totalTarget || data.links.reduce((acc, link) => acc + link.value, 0);
     return `${target} - ${Math.round((target * 100) / total)}%`;
+  };
+
+  const setDefaultTotal = d => {
+    return statuses.includes(d.name)
+      ? getTotalForTarget(getTotalForOutcome(d))
+      : data.links.reduce(
+        (accumulator, link) =>
+          d.id === link.source ? accumulator + link.value : accumulator,
+        0
+      );
   };
 
   const getTotalForOutcome = d =>
@@ -253,29 +263,28 @@ d3.json('data.json').then(initialData => {
     .attr('dy', '0.35em')
     .attr('text-anchor', 'start')
     .attr('fill', d => (statuses.includes(d.name) ? 'black' : 'white'))
-    .text(d => {
-      return statuses.includes(d.name)
-        ? getTotalForTarget(getTotalForOutcome(d))
-        : data.links.reduce(
-            (accumulator, link) =>
-              d.id === link.source ? accumulator + link.value : accumulator,
-            0
-          );
-    });
+    .text(d => setDefaultTotal(d));
+
+  const setDefaultGraphAndTotalValues = () => {
+    value.text(d => setDefaultTotal(d));
+    path.style('stroke-opacity', 1);
+    node.style('fill-opacity', 1);
+    nodeMock.style('fill-opacity', 1);
+  };
 
   const textValue = cd => {
-    const preparedCd = cd.source ? cd.source : cd;
+    const preparedCd = cd && cd.source ? cd.source : cd;
     value.text(d =>
-      statuses.includes(d.name)
+      cd && statuses.includes(d.name)
         ? getTotalForTarget(
-            getTotalForIncomeLink({ sourceId: preparedCd.id, targetId: d.id }),
-            preparedCd.value
-          )
+          getTotalForIncomeLink({ sourceId: preparedCd.id, targetId: d.id }),
+          preparedCd.value
+        )
         : data.links.reduce(
-            (accumulator, link) =>
-              d.id === link.source ? accumulator + link.value : accumulator,
-            0
-          )
+          (accumulator, link) =>
+            d.id === link.source ? accumulator + link.value : accumulator,
+          0
+        )
     );
   };
 
@@ -293,17 +302,36 @@ d3.json('data.json').then(initialData => {
   });
 
   node.on('mouseover', cd => {
+    
     textValue(cd);
-    path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+    path.style('stroke-opacity', d =>
+      cd.source.id === d.source.id && 0.25
+    );
     node.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      !statuses.includes(d.name) && cd.source.id === d.id && 0.25
     );
     nodeMock.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      !statuses.includes(d.name) && cd.source.id === d.id && 0.25
     );
   });
 
   nodeMock.on('mouseover', cd => {
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+      node.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+      nodeMock.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
+    }
+  });
+
+  // Set opacity value to 0.25 for mouseleave event
+  path.on('mouseleave', cd => {
     textValue(cd);
     path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
     node.style('fill-opacity', d =>
@@ -314,17 +342,37 @@ d3.json('data.json').then(initialData => {
     );
   });
 
-  let onSvgOver = false;
+  node.on('mouseleave', cd => {
+    textValue(cd);
+    path.style('stroke-opacity', d => (cd.id === d.source.id && 0.25));
+    node.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.id === d.id && 0.25
+    );
+    nodeMock.style('fill-opacity', d =>
+      !statuses.includes(d.name) && cd.id === d.id && 0.25
+    );
+  });
 
-  svg.on('mouseover', () => (onSvgOver = true));
-  svg.on('mouseleave', () => (onSvgOver = false));
-
-  document.addEventListener('click', () => {
-    if (!onSvgOver) {
-      path.style('stroke-opacity', 1);
-      node.style('fill-opacity', 1);
-      nodeMock.style('fill-opacity', 1);
+  nodeMock.on('mouseleave', cd => {
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => (cd.id === d.source.id && 0.25));
+      node.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id === d.id && 0.25
+      );
+      nodeMock.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id === d.id && 0.25
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
     }
+  });
+
+  svg.on('mouseleave', cd => {
+    value.text(d => setDefaultTotal(d));
+    path.style('stroke-opacity', 1);
+    node.style('fill-opacity', 1);
+    nodeMock.style('fill-opacity', 1);
   });
 
   link
