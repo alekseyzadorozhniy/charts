@@ -302,17 +302,18 @@ d3.json('data.json').then(initialData => {
   });
 
   node.on('mouseover', cd => {
-    
-    textValue(cd);
-    path.style('stroke-opacity', d =>
-      cd.source.id === d.source.id && 0.25
-    );
-    node.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.source.id === d.id && 0.25
-    );
-    nodeMock.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.source.id === d.id && 0.25
-    );
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+      node.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+      nodeMock.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
+    }
   });
 
   nodeMock.on('mouseover', cd => {
@@ -333,12 +334,12 @@ d3.json('data.json').then(initialData => {
   // Set opacity value to 0.25 for mouseleave event
   path.on('mouseleave', cd => {
     textValue(cd);
-    path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+    path.style('stroke-opacity', d => (cd.id === d.source.id && 0.25));
     node.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
     nodeMock.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
   });
 
