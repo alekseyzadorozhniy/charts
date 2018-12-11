@@ -3,9 +3,9 @@ body {
 }
 
 .container {
-  width: 900px;
-  height: 800px;
-  padding-left: 65px;
+  max-width: 900px;
+  height: auto;
+  padding-left: 15px;
   padding-top: 75px;
 }
 
@@ -55,7 +55,6 @@ body {
     opacity: 1;
   }
 }
-
 
 /*Team Node*/
 .team-node {

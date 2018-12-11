@@ -41,7 +41,6 @@ function responsivefy(svg) {
 
 const svg = d3
   .select('svg')
-  .style('width', '964')
   .style('padding-left', '65px')
   .style('overflow', 'visible')
   .call(responsivefy);
@@ -72,8 +71,8 @@ const nodeColors = [
   '#96D173'
 ];
 
-const width = 964;
-const height = 600;
+const width = parseInt(svg.style('width'), 10);
+const height = parseInt(svg.style('height'), 10);
 
 const color = id => nodeColors[id];
 
@@ -111,8 +110,8 @@ const transformData = initialData => {
         status.id === 0
           ? node.completed
           : status.id === 1
-            ? node.partial
-            : node.notBegun
+          ? node.partial
+          : node.notBegun
     }));
     return [...list, ...res];
   }, []);
@@ -149,10 +148,10 @@ d3.json('data.json').then(initialData => {
     return statuses.includes(d.name)
       ? getTotalForTarget(getTotalForOutcome(d))
       : data.links.reduce(
-        (accumulator, link) =>
-          d.id === link.source ? accumulator + link.value : accumulator,
-        0
-      );
+          (accumulator, link) =>
+            d.id === link.source ? accumulator + link.value : accumulator,
+          0
+        );
   };
 
   const getTotalForOutcome = d =>
@@ -277,14 +276,14 @@ d3.json('data.json').then(initialData => {
     value.text(d =>
       cd && statuses.includes(d.name)
         ? getTotalForTarget(
-          getTotalForIncomeLink({ sourceId: preparedCd.id, targetId: d.id }),
-          preparedCd.value
-        )
+            getTotalForIncomeLink({ sourceId: preparedCd.id, targetId: d.id }),
+            preparedCd.value
+          )
         : data.links.reduce(
-          (accumulator, link) =>
-            d.id === link.source ? accumulator + link.value : accumulator,
-          0
-        )
+            (accumulator, link) =>
+              d.id === link.source ? accumulator + link.value : accumulator,
+            0
+          )
     );
   };
 
@@ -334,35 +333,41 @@ d3.json('data.json').then(initialData => {
   // Set opacity value to 0.25 for mouseleave event
   path.on('mouseleave', cd => {
     textValue(cd);
-    path.style('stroke-opacity', d => (cd.id === d.source.id && 0.25));
-    node.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id === d.id && 0.25
+    path.style('stroke-opacity', d => cd.id === d.source.id && 0.25);
+    node.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
-    nodeMock.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id === d.id && 0.25
+    nodeMock.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
   });
 
   node.on('mouseleave', cd => {
     textValue(cd);
-    path.style('stroke-opacity', d => (cd.id === d.source.id && 0.25));
-    node.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id === d.id && 0.25
+    path.style('stroke-opacity', d => cd.id === d.source.id && 0.25);
+    node.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
-    nodeMock.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id === d.id && 0.25
+    nodeMock.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
   });
 
   nodeMock.on('mouseleave', cd => {
     if (cd.sourceLinks.length) {
       textValue(cd);
-      path.style('stroke-opacity', d => (cd.id === d.source.id && 0.25));
-      node.style('fill-opacity', d =>
-        !statuses.includes(d.name) && cd.id === d.id && 0.25
+      path.style('stroke-opacity', d => cd.id === d.source.id && 0.25);
+      node.style(
+        'fill-opacity',
+        d => !statuses.includes(d.name) && cd.id === d.id && 0.25
       );
-      nodeMock.style('fill-opacity', d =>
-        !statuses.includes(d.name) && cd.id === d.id && 0.25
+      nodeMock.style(
+        'fill-opacity',
+        d => !statuses.includes(d.name) && cd.id === d.id && 0.25
       );
     } else {
       setDefaultGraphAndTotalValues();
