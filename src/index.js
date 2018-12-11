@@ -1,11 +1,49 @@
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
 import * as d3 from 'd3';
 
-var svg = d3
+function responsivefy(svg) {
+  // container will be the DOM element
+  // that the svg is appended to
+  // we then measure the container
+  // and find its aspect ratio
+  const container = d3.select(svg.node().parentNode),
+    width = parseInt(svg.style('width'), 10),
+    height = parseInt(svg.style('height'), 10),
+    aspect = width / height;
+
+  // set viewBox attribute to the initial size
+  // control scaling with preserveAspectRatio
+  // resize svg on inital page load
+  svg
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('preserveAspectRatio', 'xMinYMid')
+    .call(resize);
+
+  // add a listener so the chart will be resized
+  // when the window resizes
+  // multiple listeners for the same event type
+  // requires a namespace, i.e., 'click.foo'
+  // api docs: https://goo.gl/F3ZCFr
+  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+  // this is the code that resizes the chart
+  // it will be called on load
+  // and in response to window resizes
+  // gets the width of the container
+  // and resizes the svg to fill it
+  // while maintaining a consistent aspect ratio
+  function resize() {
+    const w = parseInt(container.style('width'));
+    svg.attr('width', w);
+    svg.attr('height', Math.round(w / aspect));
+  }
+}
+
+const svg = d3
   .select('svg')
-  .style('width', '100%')
   .style('padding-left', '65px')
-  .style('overflow', 'visible');
+  .style('overflow', 'visible')
+  .call(responsivefy);
 
 const initialTeams = [
   { name: 'TEAM A', total: 20, notBegun: 9, partial: 6, completed: 5 },
@@ -33,8 +71,8 @@ const nodeColors = [
   '#96D173'
 ];
 
-const width = 964;
-const height = 600;
+const width = parseInt(svg.style('width'), 10);
+const height = parseInt(svg.style('height'), 10);
 
 const color = id => nodeColors[id];
 
@@ -83,10 +121,37 @@ const transformData = initialData => {
 d3.json('data.json').then(initialData => {
   const data = transformData(initialData);
 
+  const averageCompleted =
+    initialData.reduce((acc, node) => {
+      return acc + Math.round((node.completed * 100) / node.total);
+    }, 0) / initialData.length;
+  const averagePartial =
+    initialData.reduce((acc, node) => {
+      return acc + Math.round((node.partial * 100) / node.total);
+    }, 0) / initialData.length;
+  const averageNotBegun =
+    initialData.reduce((acc, node) => {
+      return acc + Math.round((node.notBegun * 100) / node.total);
+    }, 0) / initialData.length;
+
+  d3.select('#completed-total-value').text(`${Math.round(averageCompleted)}%`);
+  d3.select('#partial-total-value').text(`${Math.round(averagePartial)}%`);
+  d3.select('#not-begun-total-value').text(`${Math.round(averageNotBegun)}%`);
+
   const getTotalForTarget = (target, totalTarget) => {
     const total =
       totalTarget || data.links.reduce((acc, link) => acc + link.value, 0);
     return `${target} - ${Math.round((target * 100) / total)}%`;
+  };
+
+  const setDefaultTotal = d => {
+    return statuses.includes(d.name)
+      ? getTotalForTarget(getTotalForOutcome(d))
+      : data.links.reduce(
+          (accumulator, link) =>
+            d.id === link.source ? accumulator + link.value : accumulator,
+          0
+        );
   };
 
   const getTotalForOutcome = d =>
@@ -142,7 +207,9 @@ d3.json('data.json').then(initialData => {
       statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0 - 35
     );
 
-  nodeMock.attr('fill', d => color(d.id));
+  nodeMock.attr('fill', d =>
+    statuses.includes(d.name) ? 'transparent' : color(d.id)
+  );
 
   const link = svg
     .append('g')
@@ -169,7 +236,7 @@ d3.json('data.json').then(initialData => {
     .enter()
     .append('text')
     .attr('x', d => (statuses.includes(d.name) ? d.x1 - 135 : d.x0 - 65))
-    .attr('y', d => (d.y1 + d.y0) / 2)
+    .attr('y', d => (d.y1 + d.y0) / 2 - 10)
     .attr('dy', '0.35em')
     .attr('text-anchor', 'start')
     .attr('fill', d => (statuses.includes(d.name) ? '#648C8C' : color(d.id)))
@@ -192,25 +259,24 @@ d3.json('data.json').then(initialData => {
     )
     .attr('x', d => (statuses.includes(d.name) ? d.x1 - 135 : d.x0))
     .attr('y', d =>
-      statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 20 : (d.y1 + d.y0) / 2
+      statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 10 : (d.y1 + d.y0) / 2
     )
     .attr('dy', '0.35em')
     .attr('text-anchor', 'start')
     .attr('fill', d => (statuses.includes(d.name) ? 'black' : 'white'))
-    .text(d => {
-      return statuses.includes(d.name)
-        ? getTotalForTarget(getTotalForOutcome(d))
-        : data.links.reduce(
-            (accumulator, link) =>
-              d.id === link.source ? accumulator + link.value : accumulator,
-            0
-          );
-    });
+    .text(d => setDefaultTotal(d));
+
+  const setDefaultGraphAndTotalValues = () => {
+    value.text(d => setDefaultTotal(d));
+    path.style('stroke-opacity', 1);
+    node.style('fill-opacity', 1);
+    nodeMock.style('fill-opacity', 1);
+  };
 
   const textValue = cd => {
-    const preparedCd = cd.source ? cd.source : cd;
+    const preparedCd = cd && cd.source ? cd.source : cd;
     value.text(d =>
-      statuses.includes(d.name)
+      cd && statuses.includes(d.name)
         ? getTotalForTarget(
             getTotalForIncomeLink({ sourceId: preparedCd.id, targetId: d.id }),
             preparedCd.value
@@ -237,38 +303,99 @@ d3.json('data.json').then(initialData => {
   });
 
   node.on('mouseover', cd => {
-    textValue(cd);
-    path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
-    node.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
-    );
-    nodeMock.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
-    );
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+      node.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+      nodeMock.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
+    }
   });
 
   nodeMock.on('mouseover', cd => {
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+      node.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+      nodeMock.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
+    }
+  });
+
+  value.on('mouseover', cd => {
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
+      node.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+      nodeMock.style('fill-opacity', d =>
+        !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
+    }
+  });
+
+  // Set opacity value to 0.25 for mouseleave event
+  path.on('mouseleave', cd => {
     textValue(cd);
-    path.style('stroke-opacity', d => (cd.id !== d.source.id ? 0.25 : 1));
-    node.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+    path.style('stroke-opacity', d => cd.id === d.source.id && 0.25);
+    node.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
-    nodeMock.style('fill-opacity', d =>
-      !statuses.includes(d.name) && cd.id !== d.id ? 0.25 : 1
+    nodeMock.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
     );
   });
 
-  let onSvgOver = false;
+  node.on('mouseleave', cd => {
+    textValue(cd);
+    path.style('stroke-opacity', d => cd.id === d.source.id && 0.25);
+    node.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
+    );
+    nodeMock.style(
+      'fill-opacity',
+      d => !statuses.includes(d.name) && cd.id === d.id && 0.25
+    );
+  });
 
-  svg.on('mouseover', () => (onSvgOver = true));
-  svg.on('mouseleave', () => (onSvgOver = false));
-
-  document.addEventListener('click', () => {
-    if (!onSvgOver) {
-      path.style('stroke-opacity', 1);
-      node.style('fill-opacity', 1);
-      nodeMock.style('fill-opacity', 1);
+  nodeMock.on('mouseleave', cd => {
+    if (cd.sourceLinks.length) {
+      textValue(cd);
+      path.style('stroke-opacity', d => cd.id === d.source.id && 0.25);
+      node.style(
+        'fill-opacity',
+        d => !statuses.includes(d.name) && cd.id === d.id && 0.25
+      );
+      nodeMock.style(
+        'fill-opacity',
+        d => !statuses.includes(d.name) && cd.id === d.id && 0.25
+      );
+    } else {
+      setDefaultGraphAndTotalValues();
     }
+  });
+
+  svg.on('mouseleave', cd => {
+    value.text(d => setDefaultTotal(d));
+    path.style('stroke-opacity', 1);
+    node.style('fill-opacity', 1);
+    nodeMock.style('fill-opacity', 1);
   });
 
   link

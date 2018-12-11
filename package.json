@@ -6,21 +6,22 @@
   "scripts": {
     "start": "node app",
     "watch": "webpack-dev-server --open",
-    "build": "webpack",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "webpack": "^4.26.1",
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "babel-loader": "^8.0.4",
+    "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
-    "@babel/core": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
-    "babel-loader": "^8.0.4",
     "d3": "^5.7.0",
     "d3-sankey": "^0.7.1",
     "node-static": "^0.7.11"
