@@ -1,12 +1,16 @@
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
+import { json } from 'd3-fetch';
+import { format as d3Format } from 'd3-format';
+import { scaleOrdinal } from 'd3-scale';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 
 function responsivefy(svg) {
   // container will be the DOM element
   // that the svg is appended to
   // we then measure the container
   // and find its aspect ratio
-  const container = d3.select(svg.node().parentNode),
+  const container = select(svg.node().parentNode),
     width = parseInt(svg.style('width'), 10),
     height = parseInt(svg.style('height'), 10),
     aspect = width / height;
@@ -24,7 +28,7 @@ function responsivefy(svg) {
   // multiple listeners for the same event type
   // requires a namespace, i.e., 'click.foo'
   // api docs: https://goo.gl/F3ZCFr
-  d3.select(window).on('resize.' + container.attr('id'), resize);
+  select(window).on('resize.' + container.attr('id'), resize);
 
   // this is the code that resizes the chart
   // it will be called on load
@@ -39,21 +43,10 @@ function responsivefy(svg) {
   }
 }
 
-const svg = d3
-  .select('svg')
+const svg = select('svg')
   .style('padding-left', '65px')
   .style('overflow', 'visible')
   .call(responsivefy);
-
-const initialTeams = [
-  { name: 'TEAM A', total: 20, notBegun: 9, partial: 6, completed: 5 },
-  { name: 'TEAM B', total: 25, notBegun: 9, partial: 12, completed: 4 },
-  { name: 'TEAM B', total: 25, notBegun: 9, partial: 12, completed: 4 },
-  { name: 'TEAM B', total: 25, notBegun: 9, partial: 12, completed: 4 },
-  { name: 'TEAM B', total: 25, notBegun: 9, partial: 12, completed: 4 },
-  { name: 'TEAM B', total: 25, notBegun: 9, partial: 12, completed: 4 },
-  { name: 'TEAM B', total: 25, notBegun: 9, partial: 12, completed: 4 }
-];
 
 const statuses = ['COMPLETED', 'PARTIAL', 'NOT BEGUN'];
 
@@ -74,10 +67,12 @@ const nodeColors = [
 const width = parseInt(svg.style('width'), 10);
 const height = parseInt(svg.style('height'), 10);
 
-const color = id => nodeColors[id];
+const getColor = scaleOrdinal(schemeCategory10);
+
+const color = id => (nodeColors[id] ? nodeColors[id] : getColor(id));
 
 const format = (() => {
-  const f = d3.format(',.0f');
+  const f = d3Format(',.0f');
   return d => `${f(d)}`;
 })();
 
@@ -118,7 +113,7 @@ const transformData = initialData => {
   return { links, nodes: [...statusNodes, ...nodes] };
 };
 
-d3.json('data.json').then(initialData => {
+json('data.json').then(initialData => {
   const data = transformData(initialData);
 
   const averageCompleted =
@@ -134,9 +129,9 @@ d3.json('data.json').then(initialData => {
       return acc + Math.round((node.notBegun * 100) / node.total);
     }, 0) / initialData.length;
 
-  d3.select('#completed-total-value').text(`${Math.round(averageCompleted)}%`);
-  d3.select('#partial-total-value').text(`${Math.round(averagePartial)}%`);
-  d3.select('#not-begun-total-value').text(`${Math.round(averageNotBegun)}%`);
+  select('#completed-total-value').text(`${Math.round(averageCompleted)}%`);
+  select('#partial-total-value').text(`${Math.round(averagePartial)}%`);
+  select('#not-begun-total-value').text(`${Math.round(averageNotBegun)}%`);
 
   const getTotalForTarget = (target, totalTarget) => {
     const total =
