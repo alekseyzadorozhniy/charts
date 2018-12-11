@@ -179,4 +179,7 @@ body {
   .title {
     font-size: 12px;
   }
+  .status-value {
+    font-size: 11px;
+  }
 }

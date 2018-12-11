@@ -177,7 +177,7 @@ json('data.json').then(initialData => {
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
     .attr('width', d =>
-      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0
+      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0 - 160
     );
 
   node
@@ -195,11 +195,11 @@ json('data.json').then(initialData => {
       statuses.includes(d.name) ? 'status-mock-node' : 'team-mock-node'
     )
     .attr('id', d => `node${d.id}`)
-    .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 + 35))
+    .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 + 36))
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
     .attr('width', d =>
-      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0 - 35
+      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0 - 35.97
     );
 
   nodeMock.attr('fill', d =>
