@@ -6,13 +6,13 @@ body {
   max-width: 900px;
   height: auto;
   padding-left: 15px;
-  padding-top: 75px;
+  padding-top: 15px;
 }
 
 .title {
-  animation: scale2 0.5s ease forwards;
+  animation: opacity 0.5s linear forwards;
   opacity: 0;
-  font-size: 2px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -46,12 +46,11 @@ body {
     opacity: 1;
   }
 }
-@keyframes scale2 {
+@keyframes opacity {
   from {
     opacity: 0;
   }
   to {
-    font-size: 16px;
     opacity: 1;
   }
 }
@@ -169,5 +168,15 @@ body {
 @keyframes background-color {
   to {
     width: 0;
+  }
+}
+
+/*/////////////////*/
+@media screen and (max-width: 700px) {
+  .benchmark {
+    font-size: 11px;
+  }
+  .title {
+    font-size: 12px;
   }
 }

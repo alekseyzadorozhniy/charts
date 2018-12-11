@@ -231,7 +231,9 @@ json('data.json').then(initialData => {
     .enter()
     .append('text')
     .attr('x', d => (statuses.includes(d.name) ? d.x1 - 135 : d.x0 - 65))
-    .attr('y', d => (d.y1 + d.y0) / 2 - 10)
+    .attr('y', d =>
+      statuses.includes(d.name) ? (d.y1 + d.y0) / 2 - 10 : (d.y1 + d.y0) / 2
+    )
     .attr('dy', '0.35em')
     .attr('text-anchor', 'start')
     .attr('fill', d => (statuses.includes(d.name) ? '#648C8C' : color(d.id)))
