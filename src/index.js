@@ -83,6 +83,23 @@ const transformData = initialData => {
 d3.json('data.json').then(initialData => {
   const data = transformData(initialData);
 
+  const averageCompleted =
+    initialData.reduce((acc, node) => {
+      return acc + Math.round((node.completed * 100) / node.total);
+    }, 0) / initialData.length;
+  const averagePartial =
+    initialData.reduce((acc, node) => {
+      return acc + Math.round((node.partial * 100) / node.total);
+    }, 0) / initialData.length;
+  const averageNotBegun =
+    initialData.reduce((acc, node) => {
+      return acc + Math.round((node.notBegun * 100) / node.total);
+    }, 0) / initialData.length;
+
+  d3.select('#completed-total-value').text(`${Math.round(averageCompleted)}%`);
+  d3.select('#partial-total-value').text(`${Math.round(averagePartial)}%`);
+  d3.select('#not-begun-total-value').text(`${Math.round(averageNotBegun)}%`);
+
   const getTotalForTarget = (target, totalTarget) => {
     const total =
       totalTarget || data.links.reduce((acc, link) => acc + link.value, 0);
