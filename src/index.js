@@ -78,7 +78,7 @@ const format = (() => {
 
 const sankey1 = (() => {
   const sankey2 = sankey()
-    .nodeWidth(195)
+    .nodeWidth(100)
     .nodePadding(10)
     .extent([[1, 1], [width - 1, height - 5]]);
   return ({ nodes, links }) =>
