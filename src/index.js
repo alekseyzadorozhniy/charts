@@ -1,9 +1,11 @@
-import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
+import { sankeyLinkHorizontal } from 'd3-sankey';
 import { select } from 'd3-selection';
 import { json } from 'd3-fetch';
 import { format as d3Format } from 'd3-format';
 import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
+
+import sankey from './sankey';
 
 function responsivefy(svg) {
   // container will be the DOM element
@@ -176,7 +178,7 @@ json('data.json').then(initialData => {
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
     .attr('width', d =>
-      statuses.includes(d.name) ? d.x1 - d.x0 - 110 : d.x1 - d.x0 - 130
+      statuses.includes(d.name) ? d.x1 - d.x0 - 110 : d.x1 - d.x0 - 85
     );
 
   node
