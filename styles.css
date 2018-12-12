@@ -1,18 +1,18 @@
 body {
   font-family: 'Lato', sans-serif;
+  margin: 0;
 }
 
 .container {
   max-width: 480px;
   height: auto;
-  padding-left: 15px;
   padding-top: 15px;
 }
 
 .title {
   animation: opacity 0.5s linear forwards;
   opacity: 0;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -42,7 +42,7 @@ body {
     opacity: 0;
   }
   to {
-    font-size: 12px;
+    font-size: 9px;
     opacity: 1;
   }
 }
@@ -121,6 +121,7 @@ body {
   text-align: center;
   font-weight: 700;
   padding-top: 15px;
+  font-size: 10px;
 }
 
 .title {
@@ -136,7 +137,7 @@ body {
 }
 
 .status-value {
-  font-size: 20px;
+  font-size: 10px;
   font-weight: 900;
   color: #333;
   padding-top: 4px;
@@ -144,7 +145,7 @@ body {
 }
 
 .status-names {
-  font-size: 16px;
+  font-size: 10px;
   font-weight: 400;
   color: #333;
 }
@@ -172,7 +173,7 @@ body {
 }
 
 /*/////////////////*/
-@media screen and (max-width: 700px) {
+/* @media screen and (max-width: 700px) {
   .benchmark {
     font-size: 11px;
   }
@@ -182,4 +183,4 @@ body {
   .status-value {
     font-size: 11px;
   }
-}
+} */

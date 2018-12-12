@@ -10,9 +10,9 @@ function responsivefy(svg) {
   // that the svg is appended to
   // we then measure the container
   // and find its aspect ratio
-  const container = select(svg.node().parentNode),
-    width = parseInt(svg.style('width'), 10),
-    height = parseInt(svg.style('height'), 10),
+  const container = select('.container'),
+    width = parseInt(container.style('width'), 10),
+    height = parseInt(container.style('height'), 10),
     aspect = width / height;
 
   // set viewBox attribute to the initial size
@@ -44,7 +44,6 @@ function responsivefy(svg) {
 }
 
 const svg = select('svg')
-  .style('padding-left', '65px')
   .style('overflow', 'visible')
   .call(responsivefy);
 
@@ -78,7 +77,7 @@ const format = (() => {
 
 const sankey1 = (() => {
   const sankey2 = sankey()
-    .nodeWidth(100)
+    .nodeWidth(120)
     .nodePadding(10)
     .extent([[1, 1], [width - 1, height - 5]]);
   return ({ nodes, links }) =>
@@ -173,11 +172,11 @@ json('data.json').then(initialData => {
       statuses.includes(d.name) ? 'status-node' : 'team-node'
     )
     .attr('id', d => `node${d.id}`)
-    .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 - 10))
+    .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 - 10 + 65))
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
     .attr('width', d =>
-      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0 - 160
+      statuses.includes(d.name) ? d.x1 - d.x0 - 110 : d.x1 - d.x0 - 130
     );
 
   node
@@ -195,11 +194,11 @@ json('data.json').then(initialData => {
       statuses.includes(d.name) ? 'status-mock-node' : 'team-mock-node'
     )
     .attr('id', d => `node${d.id}`)
-    .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 + 36))
+    .attr('x', d => (statuses.includes(d.name) ? d.x0 + 10 : d.x0 + 36 + 65))
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
     .attr('width', d =>
-      statuses.includes(d.name) ? d.x1 - d.x0 - 180 : d.x1 - d.x0 - 35.97
+      statuses.includes(d.name) ? d.x1 - d.x0 - 110 : d.x1 - d.x0 - 101
     );
 
   nodeMock.attr('fill', d =>
@@ -230,7 +229,7 @@ json('data.json').then(initialData => {
     .data(nodes)
     .enter()
     .append('text')
-    .attr('x', d => (statuses.includes(d.name) ? d.x1 - 135 : d.x0 - 65))
+    .attr('x', d => (statuses.includes(d.name) ? d.x1 - 85 : d.x0 + 10))
     .attr('y', d =>
       statuses.includes(d.name) ? (d.y1 + d.y0) / 2 - 10 : (d.y1 + d.y0) / 2
     )
@@ -254,7 +253,7 @@ json('data.json').then(initialData => {
     .attr('class', d =>
       statuses.includes(d.name) ? 'status-value' : 'team-value'
     )
-    .attr('x', d => (statuses.includes(d.name) ? d.x1 - 135 : d.x0))
+    .attr('x', d => (statuses.includes(d.name) ? d.x1 - 85 : d.x0 + 65))
     .attr('y', d =>
       statuses.includes(d.name) ? (d.y1 + d.y0) / 2 + 10 : (d.y1 + d.y0) / 2
     )
